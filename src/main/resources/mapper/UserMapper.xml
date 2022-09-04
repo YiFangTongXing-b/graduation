@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.czf.graduation.mapper.UserMapper">
+
+    <resultMap id="UserMap" type="com.czf.graduation.domain.User">
+        <!--将表和类的属性不一样的字段进行匹配映射,注意主键一定要写进去-->
+        <id column="uid" property="uid"/>
+        <result column="user_name" property="username"/>
+    </resultMap>
+
+    <insert id="insertUser" useGeneratedKeys="true" keyProperty="uid">
+        insert into users (uid, user_name, password) VALUES (#{uid},#{username},#{password})
+    </insert>
+
+    <select id="findByUsername" resultMap="UserMap">
+        select * from users where user_name=#{username}
+    </select>
+
+    <select id="selectUserByUid" resultMap="UserMap">
+        select * from users where uid=#{uid};
+    </select>
+
+    <update id="updatePassword">
+        update users set password=#{password} where uid=#{uid}
+    </update>
+
+</mapper>

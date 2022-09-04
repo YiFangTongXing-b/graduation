@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.czf.graduation.mapper.AdmissionMapper">
+    <resultMap id="AdmissionMap" type="com.czf.graduation.domain.Admission">
+        <id column="admission_id" property="id"/>
+        <result column="school_id" property="sid"/>
+        <result column="school_name" property="schoolName"/>
+        <result column="least_score" property="leastScore"/>
+        <result column="avg_score" property="avgScore"/>
+        <result column="high_score" property="highScore"/>
+        <result column="least_rank" property="leastRank"/>
+    </resultMap>
+
+    <select id="selectSidByName" resultType="java.lang.Integer">
+       select distinct school_id from admission_score where school_name=#{schoolName}
+    </select>
+
+    <select id="selectAdmissionDetails" resultMap="AdmissionMap">
+        select * from admission_score where school_id=#{sid} and year=#{year} and pid=#{pid} and kind=#{kind}
+    </select>
+
+    <select id="selectAdmissionByAid" resultMap="AdmissionMap">
+        select * from admission_score where admission_id = #{aid}
+    </select>
+
+</mapper>

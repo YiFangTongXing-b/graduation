@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>学校录取分数和排名信息</title>
+    <script src="../js/jquery-1.9.1.min.js"></script>
+</head>
+<body>
+
+    <div align="center">
+
+        <div class="school" align="center">
+
+        </div>
+        <div class="provinceAndYear">
+            <span>省份</span>
+            <select id="provinceList">
+                <option>——请选择——</option>
+            </select>
+
+            <span>年份</span>
+            <select id="yearList" name="year">
+                <option>——请选择——</option>
+                <option value="2021">2021</option>
+                <option value="2020">2020</option>
+                <option value="2019">2019</option>
+                <option value="2018">2018</option>
+            </select>
+
+            <span>科目</span>
+            <select id="kindList" name="kind">
+                <option>——请选择——</option>
+                <option value="文科">文科</option>
+                <option value="理科">理科</option>
+            </select>
+            <input id="btn-admission" type="button" value="查询" />
+        </div>
+
+        <div class="admission" align="center">
+            <table cellspacing="1" border="1">
+                <thead>
+                <tr>
+                    <td>序号&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>专业名称&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>最低分数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>最高分数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>平均分数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>最低省排名&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>录取人数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>操作&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                </tr>
+                </thead>
+
+                <tbody id="admission-list">
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            let school = getSchoolName();
+            let label = '<h1>#{school}</h1>' ;
+            label = label.replace("#{school}",school);
+            $(".school").append(label);
+            showProvinces();
+        });
+
+        function getSchoolName() {
+            let searchUrl =window.location.href;
+            let school =searchUrl.split("=");        //截取 url中的“=”,获得“=”后面的参数
+            school =decodeURI(school[1]);            //decodeURI解码
+            return school;
+        }
+        function showProvinces(){
+            $.ajax({
+                url: "/getAllProvince",
+                type: "GET",
+                data:"",
+                dataType: "JSON",
+                success: function(json) {
+                    for (let i = 0; i < json.length; i++) {
+                        let option = '<option>#{province}</option>';
+                        option = option.replace("#{province}",json[i].name);
+                        $("#provinceList").append(option);
+                    }
+
+                }
+            });
+        }
+
+
+        $("#btn-admission").click(function (){
+            $("#admission-list").empty();
+            let schoolName = getSchoolName();                                   //学校名
+
+            let myselect = document.getElementById("yearList");
+            let index = myselect.selectedIndex;
+            let year = myselect.options[index].value;                           //年份
+
+            let myselect2 = document.getElementById("provinceList");
+            let index2 = myselect2.selectedIndex;
+            let province = myselect2.options[index2].value;                     //省份
+
+            let myselect3 = document.getElementById("kindList");
+            let index3 = myselect3.selectedIndex;
+            let kind = myselect3.options[index3].value;                         //文理科
+
+            $.ajax({
+                url: "/admission/getAdmission",
+                type: "GET",
+                data:"schoolName=" + schoolName + "&year=" + year + "&province=" + province + "&kind=" + kind ,
+             // data:"schoolName=广东外语外贸大学" + "&year=" + year + "&province=广东省" + "&kind=文科",
+                dataType: "JSON",
+                success: function(json) {
+                    console.log(json);
+                    for (let i = 0; i < json.length; i++) {
+                        let admission =
+                              '<tr>'
+                            + '<td>#{aid1}</td>'
+                            + '<td>#{major}</td>'
+                            + '<td>#{leastScore}</td>'
+                            + '<td>#{highScore}</td>'
+                            + '<td>#{avgScore}</td>'
+                            + '<td>#{leastRank}</td>'
+                            + '<td>#{num}</td>'
+                            + '<td><a onclick="collect(#{aid2})">收藏</a></td>'
+                            + '</tr>';
+                        admission = admission.replace("#{aid1}", i+1);
+                        admission = admission.replace("#{major}", json[i].major);
+                        admission = admission.replace("#{leastScore}", json[i].leastScore);
+                        admission = admission.replace("#{highScore}", json[i].highScore);
+                        admission = admission.replace("#{avgScore}", json[i].avgScore);
+                        admission = admission.replace("#{leastRank}", json[i].leastRank);
+                        admission = admission.replace("#{num}", json[i].num);
+                        admission = admission.replace("#{aid2}", json[i].id);
+                        $("#admission-list").append(admission);
+                    }
+                }
+            });
+        })
+
+
+        function collect(aid){
+            $.ajax({
+                url: "/collect",
+                type: "POST",
+                data: "aid="+aid,
+                dataType: "JSON",
+                success: function(json) {
+                    if(json.state === 200){
+                        alert("收藏成功!");
+                    }else{
+                        alert("收藏失败！"+json.message);
+                    }
+                },
+                error: function(json) {
+                    alert("您的登录信息已经过期，请重新登录！HTTP响应码：" + json.status);
+                    location.href = "login.html";
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<!--
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+-->
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <!--edge浏览器H5兼容设置-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--360浏览器H5兼容设置-->
+    <meta name="renderer" content="webkit" />
+    <title>高考录取分数查询系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--导入核心文件-->
+    <script src="../bootstrap3/js/holder.js"></script>
+    <link href="../bootstrap3/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <script src="../bootstrap3/jquery-1.9.1.min.js"></script>
+    <script src="../bootstrap3/js/bootstrap.js"></script>
+    <!-- 字体图标 -->
+    <link rel="stylesheet" href="../bootstrap3/font-awesome-4.7.0/css/font-awesome.css" />
+    <link rel="stylesheet" type="text/css" href="../css/layout.css" />
+    <link rel="stylesheet" type="text/css" href="../css/top.css" />
+</head>
+
+<body>
+<!--头部-->
+<header class="header">
+    <div class="row">
+        <!--快捷选项-->
+        <div class="col-md-9 top-item">
+            <ul class="list-inline pull-right">
+                <li><a href="index.html">回到首页</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+<!--导航结束-->
+<div class="container" align="center">
+
+    <div class="col-md-10" align="center">
+        <div class="panel panel-default">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#">收藏管理</a></li>
+                <li><a href="password.html">修改密码</a></li>
+            </ul>
+            <div class="panel-body">
+                <table cellspacing="1" border="1">
+                    <thead>
+                    <tr>
+                        <td>学校名称&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td>专业名称&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td>年份&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td>录取省份&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td>科目&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td>最低分数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td>最高分数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td>平均分数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td>最低省排名&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td>录取人数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td>操作&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    </tr>
+                    </thead>
+
+                    <tbody id="collection-list">
+
+                    </tbody>
+                    <!--
+                    <tfoot id="collection-page">
+                    <a href="/collections?pageNum=2">首页</a>
+                    <a th:href="'?pageNum=1'">首页</ a>
+                    <a th:if="${userlist.hasPreviousPage}" th:href="'?pageNum='+${userlist.prePage}">上一页</ a>
+                    <a th:if="${userlist.hasNextPage}" th:href="'?pageNum='+${userlist.nextPage}">下一页</ a>
+                    <a th:href="'?pageNum='+${userlist.pages}">尾页</ a>
+                    </tfoot>
+                    -->
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $.ajax({
+            url: "/collections",
+            type: "GET",
+       //     data:"uid=" + 2 ,
+            dataType: "JSON",
+            success: function(json) {
+                let list = json.data;
+                for (let i = 0; i < list.length; i++) {
+                    let collection =
+                        '<tr>'
+                        + '<td>#{school}</td>'
+                        + '<td>#{major}</td>'
+                        + '<td>#{year}</td>'
+                        + '<td>#{province}</td>'
+                        + '<td>#{kind}</td>'
+                        + '<td>#{leastScore}</td>'
+                        + '<td>#{highScore}</td>'
+                        + '<td>#{avgScore}</td>'
+                        + '<td>#{leastRank}</td>'
+                        + '<td>#{num}</td>'
+                        + '<td><a onclick="cancel(#{cid})">取消收藏</a></td>'
+                        + '</tr>';
+                    collection = collection.replace("#{school}", list[i].schoolName);
+                    collection = collection.replace("#{major}", list[i].major);
+                    collection = collection.replace("#{year}", list[i].year);
+                    collection = collection.replace("#{province}", list[i].provinceIndex);
+                    collection = collection.replace("#{kind}", list[i].kind);
+                    collection = collection.replace("#{leastScore}", list[i].leastScore);
+                    collection = collection.replace("#{highScore}", list[i].highScore);
+                    collection = collection.replace("#{avgScore}", list[i].avgScore);
+                    collection = collection.replace("#{leastRank}", list[i].leastRank);
+                    collection = collection.replace("#{num}", list[i].num);
+                    collection = collection.replace("#{cid}", list[i].cid);
+                    $("#collection-list").append(collection);
+                }
+            }
+        });
+    });
+
+    function cancel(cid) {
+        $.ajax({
+            url: "/cancel",
+            type: "POST",
+            data: "cid="+cid,
+            dataType: "JSON",
+            success: function(json) {
+                if(json.state === 200){
+                    alert("删除成功！！！");
+                    location.href = "collection.html";
+                }else{
+                    alert("删除失败！！！"+json.message);
+                }
+            },
+            error: function(json) {
+                alert("您的登录信息已经过期，请重新登录！HTTP响应码：" + json.status);
+                location.href = "login.html";
+            }
+        });
+    }
+</script>
+
+</body>
+
+</html>
