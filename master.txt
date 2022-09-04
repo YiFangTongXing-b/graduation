@@ -6,3 +6,6 @@
 
 
 a分支已经add的内容
+
+a分支在idea已经add的内容
+a分支在idea没有add的内容，直接在idea上commit，看是否会自动完成add操作
