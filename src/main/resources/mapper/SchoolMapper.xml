@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.czf.graduation.mapper.SchoolMapper">
+    <resultMap id="CollegeMap" type="com.czf.graduation.domain.School">
+        <id column="school_id" property="id"/>
+        <result column="score_site" property="scoreSite"/>
+    </resultMap>
+
+    <select id="selectCollegesByPid" resultMap="CollegeMap">
+       select * from schools where pid = #{pid}
+    </select>
+
+    <select id="selectIdBySchoolName" resultType="java.lang.Integer">
+        select school_id from schools where name = #{name}
+    </select>
+
+</mapper>

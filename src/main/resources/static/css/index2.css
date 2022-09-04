@@ -1,0 +1,95 @@
+body{
+  /*background:url(../images/index/bg1.png); */
+
+}
+.container{
+	width: 900px;
+	
+}
+.container a{
+	/* 相对定位 */
+	position: relative;
+	/* 将行内元素转化成块级元素 不然无法设置宽高 */
+
+	/* 行高 */
+	line-height: 60px;
+	margin: 5px;
+	color: grey;
+	font-size: 20px;
+	text-decoration: none;
+	transition: all 0.5s ease-in-out;
+/* 	filter: hue-rotate(calc(var(--i)*60deg)); */
+}
+.container a::before,.container a::after{
+	/*将伪元素的相同部分写在一起 */
+	content: "";
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	border: 1px solid aquamarine;
+	transition: all 0.5s ease-in-out;
+}
+.container a::before{
+	top: 0;
+	left: 0;
+	/* 删除左边的伪元素的右边和下边边框 */
+	border-bottom: 0;
+	border-right: 0;
+}
+.container a::after{
+	right: 0;
+	bottom: 0;
+	/* 删除右边伪元素的上边和左边的边框 */
+	border-top: 0;
+	border-left: 0;
+}
+.container a:hover{
+	background-color: aquamarine;
+	color: #000000;
+	/* 加发光效果和下面的倒影 模糊度加到50px */
+	box-shadow: 0 0 50px aquamarine;
+	-webkit-box-reflect: below 1px 
+	linera-gradient(transparent,rgba(0,0,0,.3));
+	/* below是下倒影 1px是倒影的元素相隔的距离  最后时渐变的颜色*/
+	transition-delay: 0.4s;
+}
+
+.school_head{
+	width:200px;
+	height:40px;
+	font-size:30px;
+	color: #000000;
+    text-shadow:  0px 0px 10px black;
+	font-family:"宋体";
+}
+
+
+    .school table {
+        width:80%;
+        margin:15px 0;
+        border:0;
+		text-align:center;
+    }
+    .school th {
+        background-color:#96C7ED;
+        color:#000000
+    }
+    .school,.school th,.school td {
+        font-size:0.95em;
+        padding:4px;
+        border-collapse:collapse;
+    }
+    .school th,.school td {
+        border: 1px solid #73b4e7;
+        border-width:1px 0 1px 0;
+        border:2px inset #ffffff;
+    }
+    .school tr {
+        border: 1px solid #ffffff;
+    }
+    .school tr:nth-child(odd){
+        background-color:#dcecf9;
+    }
+    .school tr:nth-child(even){
+        background-color:#ffffff;
+    }

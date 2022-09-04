@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.czf.graduation.mapper.UCollectionMapper">
+    <resultMap id="UCollectionMap" type="com.czf.graduation.domain.UCollection">
+        <id column="cid" property="cid"/>
+        <result column="school_name" property="schoolName"/>
+        <result column="province_index" property="provinceIndex"/>
+        <result column="least_score" property="leastScore"/>
+        <result column="least_rank" property="leastRank"/>
+        <result column="high_score" property="highScore"/>
+        <result column="avg_score" property="avgScore"/>
+    </resultMap>
+    
+    <select id="selectCollectionByUid" resultMap="UCollectionMap">
+       select * from collection where uid=#{uid}
+    </select>
+
+    <insert id="insertCollection" useGeneratedKeys="true" keyProperty="cid">
+        insert into collection (
+               cid, uid, school_name, major, province_index, year, kind,
+               least_score, high_score, avg_score, least_rank ,aid, num
+        ) values (
+               #{cid}, #{uid}, #{schoolName}, #{major},#{provinceIndex}, #{year}, #{kind},
+               #{leastRank}, #{highScore} ,#{avgScore},#{leastRank} ,#{aid} ,#{num}
+               )
+    </insert>
+
+    <select id="selectCollectionByAidAndUid" resultMap="UCollectionMap">
+        select * from collection where aid=#{aid} and uid=#{uid}
+    </select>
+    
+    <delete id="deleteCollectionByCid">
+        delete from collection where cid=#{cid}
+    </delete>
+
+</mapper>

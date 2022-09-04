@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.czf.graduation.mapper.ProvinceMapper">
+    <select id="selectAllProvince" resultType="com.czf.graduation.domain.Province">
+       select * from provinces
+    </select>
+
+    <select id="selectPidByName" resultType="java.lang.Integer">
+        select distinct pid from provinces where name = #{name}
+    </select>
+
+    <select id="selectNameByPid" resultType="java.lang.String">
+        select name from provinces where pid = #{pid}
+    </select>
+</mapper>
